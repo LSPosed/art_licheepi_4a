@@ -57,11 +57,22 @@ art_cc_defaults {
     name: "art_libarttools_tests_defaults",
     defaults: ["libarttools_defaults"],
     srcs: [
+        "tools/art_exec_test.cc",
+        "tools/cmdline_builder_test.cc",
+        "tools/system_properties_test.cc",
         "tools/tools_test.cc",
     ],
     shared_libs: [
         "libbase",
     ],
+    static_libs: [
+        "libgmock",
+    ],
+    target: {
+        android: {
+            static_libs: ["libmodules-utils-build"],
+        },
+    },
 }
 
 // Version of ART gtest `art_libarttools_tests` bundled with the ART APEX on target.
@@ -81,5 +92,28 @@ art_cc_test {
     defaults: [
         "art_standalone_gtest_defaults",
         "art_libarttools_tests_defaults",
+    ],
+}
+
+cc_binary {
+    name: "art_exec",
+    defaults: [
+        "art_defaults",
+    ],
+    srcs: [
+        "tools/art_exec.cc",
+    ],
+    shared_libs: [
+        "libartbase",
+        "libartpalette",
+        "libarttools", // Contains "libc++fs".
+        "libbase",
+    ],
+    static_libs: [
+        "libcap",
+    ],
+    apex_available: [
+        "com.android.art",
+        "com.android.art.debug",
     ],
 }
