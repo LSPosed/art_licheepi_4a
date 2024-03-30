@@ -1,0 +1,64 @@
+//
+// Copyright (C) 2023 The Android Open Source Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+package {
+    // See: http://go/android-license-faq
+    // A large-scale-change added 'default_applicable_licenses' to import
+    // all of the 'license_kinds' from "art_license"
+    // to get the below license kinds:
+    //   SPDX-license-identifier-Apache-2.0
+    default_applicable_licenses: ["art_license"],
+}
+
+cc_fuzz {
+    name: "libart_verify_dex_fuzzer",
+    srcs: ["libart_verify_dex_fuzzer.cc"],
+
+    defaults: [
+        // Run in release mode since debug is too slow.
+        "libart_static_defaults",
+        // TODO(b/186902856): remove once libart-compiler is merged into libart
+        "libart-compiler_static_defaults",
+        // To allow the ART module to build correctly.
+        "art_module_source_build_defaults",
+    ],
+
+    // Build and run on x86 too.
+    host_supported: true,
+
+    // Device needs perfetto as a shared lib.
+    target: {
+        android: {
+            shared_libs: [
+                "heapprofd_client_api",
+            ],
+        },
+    },
+
+    corpus: ["corpus/*"],
+    dictionary: "dex.dict",
+    fuzz_config: {
+        // triage_assignee: "art-perf-team@google.com",
+        cc: [
+            "solanes@google.com",
+            "art-bugs@google.com",
+        ],
+        componentid: 86431,
+        acknowledgement: [
+            "Santiago Aboy Solanes of Google",
+        ],
+    },
+}
